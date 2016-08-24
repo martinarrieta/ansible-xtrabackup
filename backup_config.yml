@@ -1,0 +1,9 @@
+---
+mysql_user: root
+mysql_password:
+transfer_port: 4444
+backup_log_file: /var/log/backup.log
+destination_host: 
+destination_path: /home/vagrant/backup
+souce_host: node1
+destination_host: node2

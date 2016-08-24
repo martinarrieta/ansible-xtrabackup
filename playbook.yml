@@ -1,0 +1,22 @@
+---
+- hosts: all
+  sudo: true
+  roles:
+    - xtrabackup
+
+  tasks:
+    - name: Installing Percona Server 5.6
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - Percona-Server-server-56
+        - Percona-Server-client-56
+      retries: 2
+      ignore_errors: yes
+
+    - name: Starting MySQL
+      service: name=mysql state=running enabled=yes
+
+    - name: Starting MySQL
+      service: name=iptables state=stopped enabled=no

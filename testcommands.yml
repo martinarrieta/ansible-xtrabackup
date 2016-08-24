@@ -1,0 +1,15 @@
+- hosts: all
+  include_vars:
+    - backup_config.yml
+- hosts: "{{ source_host }}"
+  sudo: true
+  tasks:
+    - name: Opening socket to transfer the backup
+      shell: socat -u TCP-LISTEN:{{ transfer_port }},reuseaddr stdio | xbstream -x -C {{ destination_path }}
+      async: 1
+
+- hosts: "{{ destination_host }}"
+  sudo: true
+  tasks:
+    - name: Running the backup
+      shell: innobackupex  --user={{ mysql_user }} --password='{{ mysql_password }}' --stream=xbstream {{ backup_log_file }} | socat -u stdio TCP:{{ destination_host }}:{{ transfer_port }}
